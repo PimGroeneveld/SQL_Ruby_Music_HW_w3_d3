@@ -2,8 +2,8 @@ require ("pry")
 require_relative("../models/artist")
 require_relative("../models/album")
 
-# PizzaOrder.delete_all()   #remember to use self.
-# Customer.delete_all()
+Album.delete_all()
+Artist.delete_all()
 
 artist1 = Artist.new({
   "artist_name" => "Madness"

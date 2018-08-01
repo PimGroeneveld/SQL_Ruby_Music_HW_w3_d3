@@ -4,7 +4,8 @@ require_relative("../db/sql_runner_m.rb")
 
 class Artist
 
-attr_reader :artist_name, :id
+attr_reader :id
+attr_accessor :artist_name
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
@@ -35,7 +36,7 @@ attr_reader :artist_name, :id
 
 # --- extension
   def update()
-    sql = "UPDATE music_collections SET (artist_name) = ($1) WHERE id = $2"
+    sql = "UPDATE artists SET (artist_name) = ($1) WHERE id = $2"
     values = [@artist_name, @id]
     SqlRunner.run(sql, values)
   end
@@ -46,35 +47,19 @@ attr_reader :artist_name, :id
     SqlRunner.run(sql, values)
   end
 
+  def self.delete_all()
+    sql = 'DELETE FROM artists'
+    SqlRunner.run(sql)
+  end
+
+  def self.find(id)
+     sql = "SELECT * FROM artists WHERE id = $1"
+     values = [id]
+     results = SqlRunner.run(sql, values)
+     artist_id = results.first
+     order = Artist.new(artist_id)
+     return order
+   end
+
 
 end
-
-
-
-
-
-
-#
-#   def self.delete_all()  #self. references the class. It is the exact same as Customer.delete_all. Just a shorter more generic way of writing
-#     db = PG.connect ({dbname: 'pizza_shop', host: 'localhost'})
-#     sql = 'DELETE FROM customers'
-#     db.prepare('delete_all', sql)
-#     db.exec_prepared('delete_all')
-#     db.close()
-#   end
-#
-#   # create functions that shows all orders when customer is called
-#   def orders()
-#     db = PG.connect({dbname: 'pizza_shop', host: 'localhost'})
-#     sql = "SELECT * FROM pizza_orders WHERE customer_id = $1"
-#     values = [@id]
-#     db.prepare("orders", sql)
-#     results = db.exec_prepared("orders", values)
-#     db.close()
-#     return results.map{|order| PizzaOrder.new(order)}  #order is just a placeholder, only needs to match itself in the enumeration
-#   end
-#
-#
-#
-#
-# end
